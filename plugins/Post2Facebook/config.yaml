@@ -3,7 +3,7 @@ id:   Post2Facebook
 key:  post2facebook
 author_name: Alfasado Inc.
 author_link: http://alfasado.net/
-version: 0.5
+version: 0.5.1
 l10n_class: Post2Facebook::L10N
 description: <__trans phrase='Post entry to Facebook.'>
 blog_config_template: post2facebook_config.tmpl
@@ -33,6 +33,7 @@ settings:
 callbacks:
     cms_post_save.entry: $post2facebook::Post2Facebook::Plugin::_post2facebook
     cms_post_save.page: $post2facebook::Post2Facebook::Plugin::_post2facebook
+    MT::App::CMS::template_source.edit_entry: $post2facebook::Post2Facebook::Plugin::_cb_tp_source_edit_entry
     MT::App::CMS::template_param.edit_entry: $post2facebook::Post2Facebook::Plugin::_cb_tp_param_edit_entry
     scheduled_post_published: $post2facebook::Post2Facebook::Plugin::_cb_scheduled_post_published
 applications:

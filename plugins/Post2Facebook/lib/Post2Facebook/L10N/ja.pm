@@ -24,6 +24,7 @@ our %Lexicon = (
     'Get Access Taken' => 'アクセス・トークンを取得',
     'Entry CustomField\'s basename' => 'ブログ記事投稿判別用カスタムフィールドのbasename',
     'Page CustomField\'s basename' => 'ウェブページ投稿判別用カスタムフィールドのbasename',
+    'Force post to facebook' => 'facebookへポストする',
 );
 
 1;

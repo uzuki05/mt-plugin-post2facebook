@@ -26,6 +26,30 @@ sub _get_facebook_oauth_access_token {
     return $app->build_page( $tmpl, \%param );
 }
 
+sub _cb_tp_source_edit_entry {
+    my ( $cb, $app, $tmpl_ref ) = @_;
+    
+    my $pattern = quotemeta('<div class="save-action">');
+    
+    my $mtml = <<'MTML';
+<mt:Unless name="new_object">
+  <mt:if name="can_publish_post">
+    <mt:if name="status_publish">
+      <__trans_section component="Post2Facebook">
+        <p>
+          <input type="checkbox" name="force_post2facebook" id="force_post2facebook" value="1" />
+          <label for="force_post2facebook"><__trans phrase="Force post to facebook" /></label>
+        </p>
+      </__trans_section>
+    </mt:if>
+  </mt:if>
+</mt:Unless>
+MTML
+
+    $$tmpl_ref =~ s!($pattern)!$mtml$1!g;
+    1;
+}
+
 sub _cb_tp_param_edit_entry {
     my ( $cb, $app, $param, $tmpl ) = @_;
     my $blog_id = $app->blog->id;
@@ -105,12 +129,14 @@ sub _post2facebook {
     if ( $class eq 'page' ) {
         $entry_cf = $plugin->get_config_value( 'FacebookPostEntryCustomField', 'blog:' . $blog_id );
     }
-    if (! $entry_cf ) {
-        return 1 if $original && $original->status == MT::Entry::RELEASE();
-    } else {
-        $entry_cf = 'field.' . $entry_cf;
-        if (! $obj->$entry_cf ) {
-            return 1;
+    unless ( $app->can( 'param' ) && $app->param( 'force_post2facebook' ) eq 1 ) {
+        if (! $entry_cf ) {
+            return 1 if $original && $original->status == MT::Entry::RELEASE();
+        } else {
+            $entry_cf = 'field.' . $entry_cf;
+            if (! $obj->$entry_cf ) {
+                return 1;
+            }
         }
     }
     my $access_token = $plugin->get_config_value( 'FacebookPostAppToken', 'blog:' . $blog_id );
